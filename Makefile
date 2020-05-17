@@ -1,6 +1,10 @@
-default:
-	nasm -f elf64 hello.asm
-	ld hello.o -o hello
+# Makefile for compiling a simple nasm program.
+
+%.o: %.asm
+	nasm -g -f elf64 $<
+
+%: %.o
+	ld $< -o $@
 
 clean:
-	$(RM) hello hello.o
+	$(RM) *.o

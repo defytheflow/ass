@@ -1,44 +1,33 @@
 ;
-; Calculates length of a string.
+; Writes a msg to stdout, but calculates its length programatically.
 ;
 
 section .data
-    msg db "Everybody got a drug dealer on speed dial.", 0, 10
+    msg db "Everybody got a drug dealer on speed dial.", 10, 0
 
 section .text
     global _start
 
 _start:
-    pop rcx        ; number of arguments
+    mov rax, msg        ; copy address of msg
+    mov rbx, msg        ; another copy
 
-next_arg:
-    cmp  rcx, 0    ; check if have arguments
-    jz   exit
-
-    pop  rax       ; pop the address of next argument.
-    mov  rbx, rax  ; copy string address
-    call strlen
-
-    dec  rcx       ; decrease number of arguments
-    jmp  next_arg
-
-strlen:
-    cmp byte[rbx], 0
-    jz print
+next_char:
+    cmp byte[rbx], 0    ; check if rbx points to 0.
+    jz print            ; if it does, go to print
     inc rbx
-    jmp strlen
+    jmp next_char
 
 print:
-    sub rbx, rax    ; calculate length
-    add rbx, 2      ; zero and newline
+    sub rbx, rax        ; calculate length of the string
 
-    mov rsi, rax    ; address of the string
-    mov rax, 1      ; sys_write
-    mov rdi, 1      ; stdout
-    mov rdx, rbx    ; number of bytes
+    mov rax, 1          ; sys_write
+    mov rdi, 1          ; stdout
+    mov rsi, msg        ; string address
+    mov rdx, rbx        ; length
     syscall
 
 exit:
-    mov rax, 60     ; sys_exit
-    mov rdi, 0      ; exit code
+    mov rax, 60         ; sys_exit
+    mov rdi, 0          ; exit code
     syscall
