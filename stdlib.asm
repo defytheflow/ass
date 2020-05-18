@@ -3,7 +3,7 @@
 ;
 
 ; #############################################################################
-;                                  Constants.
+; Constants.
 ; #############################################################################
 
 ; file descriptors.
@@ -23,9 +23,9 @@
 %define EXIT_SUCCESS  0
 
 ; #############################################################################
-;                        Calculates length of a string.
-;                        Input: string address in rax.
-;                        Return: string length in rax.
+; Calculates length of a string.
+; Input: string address in rax.
+; Return: string length in rax.
 ; #############################################################################
 
 str_len:
@@ -44,8 +44,8 @@ finish:
     ret
 
 ; #############################################################################
-;                        Prints a character to stdout.
-;                       Input: character in rax.
+; Prints a character to stdout.
+; Input: character in rax.
 ; #############################################################################
 
 char_print:
@@ -60,21 +60,23 @@ char_print:
     ret
 
 ; #############################################################################
-;                         Prints an integer to stdout.
-;                            Input: integer in rax.
+; Prints an integer to stdout.
+; Input: integer in rax.
 ; #############################################################################
 
-iprint:
+int_print:
     push rax              ; passed integer.
     push rbx              ; counter.
     push rdx              ; division remainder.
+    push rsi              ; divisor.
 
-    mov  rbx, 0           ; initialize counter to 0.
+    mov  rbx, 0           ; initialize counter.
+    mov  rsi, 10          ; initialize divisor.
 
 divide_loop:
     inc  rbx              ; increment number of bytes to print.
-    mov  rdx, 0           ; empty rdx.
-    ;idiv 10               ; divide rax by 10.
+    mov  rdx, 0           ; clear rdx.
+    idiv rsi              ; divide rax by divisor (10).
     add  rdx, ASCII_ZERO  ; convert remainder to ascii.
     push rdx              ; save remainder on the stack.
     cmp  rax, 0           ; can we divide more?
@@ -82,37 +84,33 @@ divide_loop:
 
 print_loop:
     dec  rbx              ; decrement number of bytes to print.
-    mov  rax, rsp         ; address of last pushed ascii value onto the stack.
+    pop rax               ; last pushed ascii value onto the stack.
     call char_print
-    pop  rax              ; remove the last character from the stack.
     cmp  rbx, 0           ; have we print all bytes we pushed onto the stack?
     jnz  print_loop
 
     pop rdx
     pop rbx
     pop rax
-
+    pop rsi
     ret
 
 ; #############################################################################
-;                 Prints an integer and a new line to stdout.
-;                            Input: integer in rax.
+; Prints an integer and a new line to stdout.
+; Input: integer in rax.
 ; #############################################################################
 
-iprintln:
-    ; print an integer.
-    call iprint
+int_println:
+    call int_print
 
-    ; print a new line char.
-    push ASCII_NL
-    mov rax, rsp
+    mov rax, ASCII_NL
     call char_print
 
     ret
 
 ; #############################################################################
-;                         Prints a string to stdout.
-;                        Input: string address in rax.
+; Prints a string to stdout.
+; Input: string address in rax.
 ; #############################################################################
 
 str_print:
@@ -132,8 +130,8 @@ str_print:
     ret
 
 ; #############################################################################
-;                  Prints a string and a new line to stdout.
-;                        Input: string address in rax.
+; Prints a string and a new line to stdout.
+; Input: string address in rax.
 ; #############################################################################
 
 str_println:
@@ -145,7 +143,7 @@ str_println:
     ret
 
 ; #############################################################################
-;                              Exits the program.
+; Exits the program.
 ; #############################################################################
 
 exit:
