@@ -15,6 +15,7 @@ _start:
     mov rdx, 13   ; number of bytes
     syscall
 
+exit:
     mov rax, 60   ; sys_exit
     mov rdi, 0    ; exit code
     syscall
