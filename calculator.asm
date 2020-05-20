@@ -1,5 +1,5 @@
 ;
-; Takes several command line arguments and adds them together (numbers).
+;  Prints a sum of it's command line arguments.
 ;
 
 %include 'stdlib.asm'
@@ -11,18 +11,20 @@ _start:
     pop  rcx          ; number of arguments
     pop  rdx          ; program name
     dec  rcx          ; decrease number of arguments (program name).
-    xor  edx, edx     ; initialize data register to store additions.
+    xor  rdx, rdx     ; initialize data register to store additions.
 
-.next_arg:
-    cmp  ecx, 0       ; check to see if we have any arguments left
+.loop:
+    cmp  rcx, 0       ; check to see if we have any arguments left
     jz   .finish
-    pop  rax          ; pop the next argument of the stack.
-    call str_to_int
-    add  edx, eax     ; perform our addition logic.
-    dec  ecx          ; decrease number of arguments left.
-    jmp  .next_arg
+    pop  rdi          ; pop the next argument of the stack.
+    push rcx
+    call stoi
+    pop  rcx
+    add  rdx, rax     ; perform our addition logic.
+    dec  rcx          ; decrease number of arguments left.
+    jmp  .loop
 
 .finish:
-    mov  eax, edx     ; move data result into rax for printing
-    call int_println
+    mov  rdi, rdx
+    call intprintln
     call exit

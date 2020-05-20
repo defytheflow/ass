@@ -1,5 +1,5 @@
 ;
-; Counts to a number.
+; Prints a number on each line up to COUNT.
 ;
 
 %include 'stdlib.asm'
@@ -10,14 +10,18 @@ section .text
     global _start
 
 _start:
-    mov  ecx, 0
+    mov  rcx, 0
 
-.next_num:
-    inc  ecx
+.loop:
+    inc  rcx
 
-    mov  eax, ecx
-    call int_println
-    cmp  ecx, COUNT
-    jne  .next_num
+    mov  rdi, rcx
+    push rcx
+    call intprintln
+    pop  rcx
 
+    cmp  rcx, COUNT
+    jne  .loop
+
+    mov  rdi, 0
     call exit
