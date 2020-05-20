@@ -11,12 +11,12 @@ section .text
     global _start
 
 _start:
-    mov  rax, 90
-    mov  rbx, 9
-    div  rbx
+    mov  eax, 90
+    mov  ebx, 9
+    div  ebx
     call int_print
-    mov  rax, msg
+    mov  eax, msg
     call str_print
-    mov rax, rdx   ; move remainder into rax
+    mov  eax, edx   ; move remainder into eax
     call int_println
     call exit

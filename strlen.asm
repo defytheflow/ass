@@ -11,6 +11,6 @@ section .text
     global _start
 
 _start:
-    mov rax, msg
+    mov  eax, msg
     call str_println
     call exit

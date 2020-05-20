@@ -9,13 +9,13 @@ section .text
     global _start
 
 _start:
-    mov rax, 1    ; sys_write
-    mov rdi, 1    ; stdout
-    mov rsi, msg  ; string address
-    mov rdx, 13   ; number of bytes
+    mov eax, 1    ; sys_write
+    mov edi, 1    ; stdout
+    mov esi, msg  ; string address
+    mov edx, 13   ; number of bytes
     syscall
 
 exit:
-    mov rax, 60   ; sys_exit
-    mov rdi, 0    ; exit code
+    mov eax, 60   ; sys_exit
+    mov edi, 0    ; exit code
     syscall

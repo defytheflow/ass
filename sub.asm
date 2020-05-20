@@ -8,8 +8,8 @@ section .text
     global _start
 
 _start:
-    mov  rax, 90
-    mov  rbx, 9
-    sub  rax, rbx
+    mov  eax, 90
+    mov  ebx, 9
+    sub  eax, ebx
     call int_println
     call exit

@@ -15,19 +15,19 @@ section .text
     global _start
 
 _start:
-    mov rax, prompt
+    mov  eax, prompt
     call str_print
 
-    mov rax, SYS_READ
-    mov rdi, STDIN
-    mov rsi, sinput
-    mov rdx, 255
+    mov  eax, SYS_READ
+    mov  edi, STDIN
+    mov  esi, sinput
+    mov  edx, 255
     syscall
 
-    mov rax, answer
+    mov  eax, answer
     call str_print
 
-    mov rax, sinput
+    mov  eax, sinput
     call str_print
 
     call exit

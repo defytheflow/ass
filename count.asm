@@ -4,20 +4,20 @@
 
 %include 'stdlib.asm'
 
-%define COUNT      100
+%define COUNT 100
 
-section .test
+section .text
     global _start
 
 _start:
-    mov r8, 0  ; initialize counter to 0.
+    mov  ecx, 0
 
-next_num:
-    inc r8
+.next_num:
+    inc  ecx
 
-    mov rax, r8
+    mov  eax, ecx
     call int_println
-    cmp r8, COUNT
-    jne next_num
+    cmp  ecx, COUNT
+    jne  .next_num
 
     call exit

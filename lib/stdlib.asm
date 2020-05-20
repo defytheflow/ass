@@ -17,8 +17,6 @@
 
 ; ascii values.
 %define ASCII_NL     10
-%define ASCII_ZERO   48
-%define ASCII_NINE   57
 
 ; exit codes.
 %define EXIT_SUCCESS  0
@@ -50,14 +48,17 @@ str_len:
 ; #############################################################################
 
 char_print:
+    push rcx  ; for whatever reason sys_write messes up rcx.
     push rax
 
     mov rax, SYS_WRITE
+    mov rdi, STDOUT
     mov rsi, rsp
     mov rdx, 1
     syscall
 
     pop rax
+    pop rcx
     ret
 
 ; #############################################################################
@@ -66,34 +67,34 @@ char_print:
 ; #############################################################################
 
 int_print:
-    push rax              ; passed integer.
-    push rbx              ; counter.
+    push rax              ; input integer.
+    push rcx              ; counter.
     push rdx              ; division remainder.
     push rsi              ; divisor.
 
-    mov  rbx, 0           ; initialize counter.
+    mov  rcx,  0          ; initialize counter.
     mov  rsi, 10          ; initialize divisor.
 
 .divide_loop:
-    inc  rbx              ; increment number of bytes to print.
+    inc  rcx              ; increment number of bytes to print.
     mov  rdx, 0           ; clear rdx.
     idiv rsi              ; divide rax by divisor (10).
-    add  rdx, ASCII_ZERO  ; convert remainder to ascii.
+    add  rdx, '0'         ; convert remainder to ascii.
     push rdx              ; save remainder on the stack.
     cmp  rax, 0           ; can we divide more?
     jnz  .divide_loop
 
 .print_loop:
-    dec  rbx              ; decrement number of bytes to print.
-    pop  rax               ; last pushed ascii value onto the stack.
+    dec  rcx              ; decrement number of bytes to print.
+    pop  rax              ; last pushed ascii value onto the stack.
     call char_print
-    cmp  rbx, 0           ; have we print all bytes we pushed onto the stack?
+    cmp  rcx, 0           ; have we print all bytes we pushed onto the stack?
     jnz  .print_loop
 
-    pop  rdx
-    pop  rbx
-    pop  rax
     pop  rsi
+    pop  rdx
+    pop  rcx
+    pop  rax
     ret
 
 ; #############################################################################
@@ -104,7 +105,7 @@ int_print:
 int_println:
     call int_print
 
-    mov rax, ASCII_NL
+    mov  rax, ASCII_NL
     call char_print
 
     ret
@@ -115,10 +116,9 @@ int_println:
 ; #############################################################################
 
 str_print:
-    push rdx            ; counter.
     push rax            ; string address.
 
-    call str_len           ; returns string len in rax.
+    call str_len        ; returns string len in rax.
     mov  rdx, rax       ; how many bytes to write.
     pop  rax            ; restore address of the string.
 
@@ -127,7 +127,6 @@ str_print:
     mov rax, SYS_WRITE
     syscall
 
-    pop rdx
     ret
 
 ; #############################################################################
@@ -151,29 +150,31 @@ exit:
     mov rax, SYS_EXIT
     mov rdi, EXIT_SUCCESS
     syscall
+
 ; #############################################################################
 ; Converts string to an integer.
 ; Input: string address in rax.
 ; #############################################################################
+
 str_to_int:
     push rbx
-    push rcx
+    push rcx            ; counter.
     push rdx
     push rsi
 
     mov rsi, rax        ; address of the string.
     mov rax, 0          ; integer value.
-    mov rcx, 0          ; counter.
+    mov rcx, 0          ; initialize counter.
 
 .multiply_loop:
-    xor rbx, rbx        ; reset both lower and upper bytes to 0.
+    xor rbx, rbx        ; clear rbx.
     mov bl, [rsi + rcx] ; move a single byte into rbx register's lower half.
-    cmp bl, ASCII_ZERO
+    cmp bl, '0'
     jl  .finish
-    cmp bl, ASCII_NINE
+    cmp bl, '9'
     jg .finish
 
-    sub bl, ASCII_ZERO
+    sub bl, '0'
     add rax, rbx
     mov rbx, 10
     mul rbx             ; multiply rax by rbx to get place value.
