@@ -20,10 +20,17 @@
 ; syscall opcodes.
 %define SYS_READ      0
 %define SYS_WRITE     1
+%define SYS_OPEN      2
 %define SYS_EXIT     60
+%define SYS_CREAT    85
 
 ; ascii values.
 %define ASCII_NL     10
+
+; file access modes.
+%define O_RDONLY      0
+%define O_WRONLY      1
+%define O_RDWR        2
 
 ; exit codes.
 %define EXIT_SUCCESS  0
