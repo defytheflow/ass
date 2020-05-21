@@ -7,4 +7,4 @@
 	ld $< -o bin/$@
 
 clean:
-	$(RM) *.o
+	$(RM) *.o bin/*
