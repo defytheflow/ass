@@ -15,7 +15,7 @@ section .text
 
 _start:
 
-.print_before:
+; Before
     mov   rax, s1
     call  str_print
 
@@ -28,13 +28,13 @@ _start:
     mov   rax, [b]
     call  int_println
 
-.swap:
+; Swap
     mov rax, [a]
     mov rbx, [b]
     mov [a], rbx
     mov [b], rax
 
-.print_after:
+; After
     mov   rax, s2
     call  str_print
 
